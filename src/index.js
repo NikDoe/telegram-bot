@@ -1,10 +1,19 @@
 const tbot = require('node-telegram-bot-api');
+const mongoose =  require('mongoose')
 const config = require('./config');
 const helper = require('./helper');
 const kb = require('./keyboard-buttons')
 const keyboard = require('./keyboard')
 
 helper.logStart()
+
+mongoose.Promise = global.Promise
+
+mongoose.connect(config.DB_URL, {
+    useNewUrlParser: true
+})
+    .then(() => console.log('MongoDB connected'))
+    .catch((err) => console.log(err))
 
 const bot = new tbot(config.TOKEN, {
     polling: true

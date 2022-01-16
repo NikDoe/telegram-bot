@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/NikDoe/telegram-bot#readme",
   "dependencies": {
+    "mongoose": "^6.1.6",
     "node-telegram-bot-api": "^0.56.0"
   },
   "devDependencies": {
