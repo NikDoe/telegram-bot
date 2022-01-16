@@ -2,8 +2,9 @@ const tbot = require('node-telegram-bot-api');
 const mongoose =  require('mongoose')
 const config = require('./config');
 const helper = require('./helper');
-const kb = require('./keyboard-buttons')
-const keyboard = require('./keyboard')
+const kb = require('./keyboard-buttons');
+const keyboard = require('./keyboard');
+const database =  require('../db.json');
 
 helper.logStart()
 
@@ -14,6 +15,12 @@ mongoose.connect(config.DB_URL, {
 })
     .then(() => console.log('MongoDB connected'))
     .catch((err) => console.log(err))
+
+require('./models/film.model');
+
+const Film = mongoose.model('films')
+
+// database.films.forEach(f => new Film(f).save())
 
 const bot = new tbot(config.TOKEN, {
     polling: true
