@@ -1,0 +1,26 @@
+{
+  "name": "telegram-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./src/index.js",
+    "dev": "nodemon ./src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NikDoe/telegram-bot.git"
+  },
+  "author": "Nik Doe",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NikDoe/telegram-bot/issues"
+  },
+  "homepage": "https://github.com/NikDoe/telegram-bot#readme",
+  "dependencies": {
+    "node-telegram-bot-api": "^0.56.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
