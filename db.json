@@ -100,52 +100,52 @@
   "cinemas": [
     {
       "uuid": "c123",
-      "name": "World Cinema Plus",
+      "name": "Кинотеатр «Мир» 3D",
       "location": {
-        "latitude": 59.883744,
-        "longitude": 30.268672
+        "latitude": 52.39589772868165,
+        "longitude": 31.029381972644376
       },
-      "url": "http://world-cinema-plus.com",
+      "url": "https://kinotavr.by/",
       "films": ["f890", "f678", "f567", "f123", "f234"]
     },
     {
       "uuid": "c234",
-      "name": "The Greatest Cinema",
+      "name": "Кинотеатр им. Калинина 2D/3D",
       "location": {
-        "latitude": 59.843103,
-        "longitude": 30.305378
+        "latitude": 52.426492115529825,
+        "longitude": 31.012513436946946
       },
-      "url": "http://the-greatest-cinema.com",
+      "url": "https://gomelkino.by/",
       "films": ["f345", "f678"]
     },
     {
       "uuid": "c345",
-      "name": "Watch your eyes",
+      "name": "Кинотеатр «Октябрь» 3D",
       "location": {
-        "latitude": 60.024840,
-        "longitude": 30.390167
+        "latitude": 52.419244465343695,
+        "longitude": 30.976700491110456
       },
-      "url": "http://watch-your-eyes.com",
+      "url": "https://gomelkino.by/",
       "films": ["f123", "f345", "f456", "f567", "f789"]
     },
     {
       "uuid": "c456",
-      "name": "Happy hours",
+      "name": "Антикинотеатр Under House",
       "location": {
-        "latitude": 59.828174,
-        "longitude": 30.377967
+        "latitude": 52.43653663362846,
+        "longitude": 31.011665134989826
       },
-      "url": "http://happy-hours.com",
+      "url": "https://under-house.business.site/?utm_source=gmb&utm_medium=referral",
       "films": ["f234", "f456", "f789", "f890"]
     },
     {
       "uuid": "c567",
-      "name": "Family Cinema",
+      "name": "Misteria Cinema",
       "location": {
-        "latitude": 60.000354,
-        "longitude": 30.194079
+        "latitude": 52.45652286649203,
+        "longitude": 31.00216220773205
       },
-      "url": "http://family-cinema.com",
+      "url": "https://misteria.by/",
       "films": ["f567", "f789"]
     }
   ]
