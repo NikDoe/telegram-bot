@@ -8,6 +8,13 @@ const database =  require('../db.json');
 const geolib = require('geolib')
 const _ = require('lodash')
 
+const ACTION_TYPE = {
+    CINEMA_FILMS: 'cfs',
+    FILM_CINEMAS: 'fcs',
+    CINEMA_LOCATION: 'cl',
+    FILM_TOGGLE_FAV: 'ftf'
+}
+
 helper.logStart()
 
 mongoose.Promise = global.Promise
@@ -74,6 +81,30 @@ bot.on('message', msg => {
     }
 })
 
+// handler inline keyboard
+bot.on('callback_query', query => {
+    const userId = query.from.id
+
+    let data
+    try {
+        data = JSON.parse(query.data)
+    } catch (e) {
+        throw new Error('Data is not a object')
+    }
+
+    const { type } = data
+
+    if (type === ACTION_TYPE.CINEMA_LOCATION) {
+
+    } else if (type === ACTION_TYPE.FILM_TOGGLE_FAV) {
+
+    } else if (type === ACTION_TYPE.CINEMA_FILMS) {
+
+    } else if (type === ACTION_TYPE.FILM_CINEMAS) {
+
+    }
+})
+
 // start bot
 bot.onText(/\/start/, msg => {
     const text = `Здравствуйте, ${msg.from.first_name}!\nВыберите команду для начала`
@@ -99,11 +130,17 @@ bot.onText(/\/f(.+)/, (msg, [source, match]) => {
                     [
                         {
                             text: 'Добавить в избранное',
-                            callback_data: film.uuid
+                            callback_data: JSON.stringify({
+                                type: ACTION_TYPE.FILM_TOGGLE_FAV,
+                                filmUuid: film.uuid,
+                            })
                         },
                         {
                             text: 'Показать кинотеатры',
-                            callback_data: film.uuid
+                            callback_data: JSON.stringify({
+                                type: ACTION_TYPE.FILM_CINEMAS,
+                                cinemaUuids: film.cinemas
+                            })
                         }
                     ],
                     [
@@ -133,13 +170,20 @@ bot.onText(/\/c(.+)/, (msg, [source, match]) => {
                         },
                         {
                             text: `Показать на карте`,
-                            callback_data: JSON.stringify(cinema.uuid)
+                            callback_data: JSON.stringify({
+                                type: ACTION_TYPE.CINEMA_LOCATION,
+                                lat: cinema.location.latitude,
+                                lon: cinema.location.longitude,
+                            })
                         }
                     ],
                     [
                         {
                             text: `Показать фильмы`,
-                            callback_data: JSON.stringify(cinema.films)
+                            callback_data: JSON.stringify({
+                                type: ACTION_TYPE.CINEMA_FILMS,
+                                filmUuids: cinema.films
+                            })
                         }
                     ]
                 ]
