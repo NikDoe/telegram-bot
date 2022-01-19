@@ -97,7 +97,7 @@ bot.on('callback_query', query => {
     if (type === ACTION_TYPE.CINEMA_LOCATION) {
 
     } else if (type === ACTION_TYPE.FILM_TOGGLE_FAV) {
-
+        toggleFavouriteFilm(userId, query.id, data);
     } else if (type === ACTION_TYPE.CINEMA_FILMS) {
 
     } else if (type === ACTION_TYPE.FILM_CINEMAS) {
@@ -117,42 +117,50 @@ bot.onText(/\/start/, msg => {
 
 // find film by id
 bot.onText(/\/f(.+)/, (msg, [source, match]) => {
-    const filmUuid = helper.getItemUuid(source);
-    const chatId = helper.getChatId(msg);
+    const filmUuid = helper.getItemUuid(source)
 
-    Film.findOne({uuid: filmUuid}).then(film => {
-        const caption = `Название: ${film.name}\nГод: ${film.year}\nРейтинг: ${film.rate}\nДлинна: ${film.length}\nСтрана: ${film.country}`;
+    Promise.all([Film.findOne({uuid: filmUuid}), User.findOne({telegramId: msg.from.id})])
+        .then(([film, user]) => {
 
-        bot.sendPhoto(chatId, film.picture, {
-            caption,
-            reply_markup: {
-                inline_keyboard: [
-                    [
-                        {
-                            text: 'Добавить в избранное',
-                            callback_data: JSON.stringify({
-                                type: ACTION_TYPE.FILM_TOGGLE_FAV,
-                                filmUuid: film.uuid,
-                            })
-                        },
-                        {
-                            text: 'Показать кинотеатры',
-                            callback_data: JSON.stringify({
-                                type: ACTION_TYPE.FILM_CINEMAS,
-                                cinemaUuids: film.cinemas
-                            })
-                        }
-                    ],
-                    [
-                        {
-                            text: `Кинопоиск: ${film.name}`,
-                            url: film.link
-                        }
-                    ]
-                ]
+            let isFavourite = false
+
+            if (user) {
+                isFavourite = user.films.indexOf(film.uuid) !== -1
             }
-        })
-    })
+
+            const favouriteText = isFavourite ? 'Удалить из избранного' : 'Добавить в избранное'
+
+            bot.sendPhoto(msg.chat.id, film.picture, {
+                caption: `Название: ${film.name}\nГод: ${film.year}\nРейтинг: ${film.rate}\nДлинна: ${film.length}\nСтрана: ${film.country}`,
+                reply_markup: {
+                    inline_keyboard: [
+                        [
+                            {
+                                text: favouriteText,
+                                callback_data: JSON.stringify({
+                                    type: ACTION_TYPE.FILM_TOGGLE_FAV,
+                                    filmUuid: film.uuid,
+                                    isFav: isFavourite
+                                })
+                            },
+                            {
+                                text: 'Показать кинотеатры',
+                                callback_data: JSON.stringify({
+                                    type: ACTION_TYPE.FILM_CINEMAS,
+                                    cinemaUuids: film.cinemas
+                                })
+                            }
+                        ],
+                        [
+                            {
+                                text: `Кинопоиск: ${film.name}`,
+                                url: film.link
+                            }
+                        ]
+                    ]
+                }
+            })
+        }).catch(e => console.log(e))
 })
 
 // find cinema by id
@@ -191,8 +199,6 @@ bot.onText(/\/c(.+)/, (msg, [source, match]) => {
         }).catch(err => console.log(err))
     })
 })
-
-
 
 // find all films by type
 function sendFilmsByQuery(chatId, query) {
@@ -237,4 +243,38 @@ function sendCinemasInCords(chatId, location) {
 
         sendHtml(chatId, html, 'home')
     })
+}
+
+// add or remove from favourite films
+function toggleFavouriteFilm(userId, queryId, {filmUuid, isFav}) {
+    let userPromise
+
+    User.findOne({telegramId: userId})
+        .then(user => {
+            if (user) {
+                if (isFav) {
+                    user.films = user.films.filter(fUuid => fUuid !== filmUuid)
+                } else {
+                    user.films.push(filmUuid)
+                }
+                userPromise = user
+            } else {
+                userPromise = new User({
+                    telegramId: userId,
+                    films: [filmUuid]
+                })
+            }
+
+            const answerText = isFav ? `Удалено из избранного` : `Фильм добавлен в избранное`
+
+            userPromise.save()
+                .then(_ => {
+                    bot.answerCallbackQuery({
+                        callback_query_id: queryId,
+                        text: answerText
+                    })
+                })
+                .catch(err => console.log(err))
+        })
+        .catch(err => console.log(err))
 }
