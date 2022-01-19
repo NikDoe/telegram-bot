@@ -102,7 +102,7 @@ bot.on('callback_query', query => {
     } else if (type === ACTION_TYPE.CINEMA_FILMS) {
 
     } else if (type === ACTION_TYPE.FILM_CINEMAS) {
-
+        sendFilmCinemasByQuery(userId, {uuid: {'$in': data.cinemaUuids}});
     }
 })
 
@@ -303,4 +303,14 @@ function showFavouriteFilms(chatId, telegramId) {
                 sendHtml(chatId, 'Вы пока ничего не добавили', 'home')
             }
         }).catch(e => console.log(e))
+}
+
+function sendFilmCinemasByQuery(userId, query) {
+    Cinema.find(query).then(cinemas => {
+        const html = cinemas.map((c, i) => {
+            return `<b>${i + 1}</b> ${c.name} - /c${c.uuid}`
+        }).join('\n')
+
+        sendHtml(userId, html, 'home')
+    })
 }
