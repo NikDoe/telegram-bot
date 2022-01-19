@@ -202,6 +202,36 @@ bot.onText(/\/c(.+)/, (msg, [source, match]) => {
     })
 })
 
+// inline query bot from other chats
+bot.on('inline_query', query => {
+    console.log(query)
+    Film.find({}).then(films => {
+        const results = films.map(f => {
+            return {
+                id: f.uuid,
+                type: 'photo',
+                photo_url: f.picture,
+                thumb_url: f.picture,
+                caption: `Название: ${f.name}\nГод: ${f.year}\nРейтинг: ${f.rate}\nДлинна: ${f.length}\nСтрана: ${f.country}`,
+                reply_markup: {
+                    inline_keyboard: [
+                        [
+                            {
+                                text: `Кинопоиск: ${f.name}`,
+                                url: f.link
+                            }
+                        ]
+                    ]
+                }
+            }
+        })
+
+        bot.answerInlineQuery(query.id, results, {
+            cache_time: 0
+        })
+    })
+})
+
 // find all films by type
 function sendFilmsByQuery(chatId, query) {
     Film.find(query).then(films => {
