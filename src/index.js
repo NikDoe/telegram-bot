@@ -5,6 +5,8 @@ const helper = require('./helper');
 const kb = require('./keyboard-buttons');
 const keyboard = require('./keyboard');
 const database =  require('../db.json');
+const geolib = require('geolib')
+const _ = require('lodash')
 
 helper.logStart()
 
@@ -66,7 +68,7 @@ bot.on('message', msg => {
     }
 
     if (msg.location) {
-        console.log(msg.location);
+        sendCinemasInCords(chatId, msg.location);
     }
 })
 
@@ -143,4 +145,23 @@ function sendHtml(chatId, html, keyboardName = null) {
     }
 
     bot.sendMessage(chatId, html, options)
+}
+
+// find cinemas with cords
+function sendCinemasInCords(chatId, location) {
+
+    Cinema.find({}).then(cinemas => {
+
+        cinemas.forEach(c => {
+            c.distance = geolib.getDistance(location, c.location) / 1000
+        })
+
+        cinemas = _.sortBy(cinemas, 'distance')
+
+        const html = cinemas.map((c, i) => {
+            return `<b>${i + 1}</b> ${c.name}. <em>Расстояние</em> - <strong>${c.distance}</strong> км. /c${c.uuid}`
+        }).join('\n')
+
+        sendHtml(chatId, html, 'home')
+    })
 }

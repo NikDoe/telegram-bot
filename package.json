@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/NikDoe/telegram-bot#readme",
   "dependencies": {
+    "geolib": "^3.3.3",
+    "lodash": "^4.17.21",
     "mongoose": "^6.1.6",
     "node-telegram-bot-api": "^0.56.0"
   },
