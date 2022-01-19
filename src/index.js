@@ -96,7 +96,8 @@ bot.on('callback_query', query => {
     const { type } = data
 
     if (type === ACTION_TYPE.CINEMA_LOCATION) {
-
+        const { lat, lon } = data
+        bot.sendLocation(query.message.chat.id, lat, lon)
     } else if (type === ACTION_TYPE.FILM_TOGGLE_FAV) {
         toggleFavouriteFilm(userId, query.id, data);
     } else if (type === ACTION_TYPE.CINEMA_FILMS) {
