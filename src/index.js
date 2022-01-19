@@ -114,11 +114,38 @@ bot.onText(/\/f(.+)/, (msg, [source, match]) => {
             }
         })
     })
-
-
-
-
 })
+
+// find cinema by id
+bot.onText(/\/c(.+)/, (msg, [source, match]) => {
+    const cinemaUuid = helper.getItemUuid(source)
+
+    Cinema.findOne({uuid: cinemaUuid}).then(cinema => {
+        bot.sendMessage(helper.getChatId(msg), `Кинотеатр - ${cinema.name}`, {
+            reply_markup: {
+                inline_keyboard: [
+                    [
+                        {
+                            text: 'Сайт',
+                            url: cinema.url
+                        },
+                        {
+                            text: `Показать на карте`,
+                            callback_data: JSON.stringify(cinema.uuid)
+                        }
+                    ],
+                    [
+                        {
+                            text: `Показать фильмы`,
+                            callback_data: JSON.stringify(cinema.films)
+                        }
+                    ]
+                ]
+            }
+        }).catch(err => console.log(err))
+    })
+})
+
 
 
 // find all films by type
