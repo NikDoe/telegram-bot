@@ -33,8 +33,8 @@ const Film = mongoose.model('films');
 const Cinema = mongoose.model('cinemas');
 const User = mongoose.model('users');
 
-database.films.forEach(f => new Film(f).save())
-database.cinemas.forEach(c => new Cinema(c).save())
+// database.films.forEach(f => new Film(f).save())
+// database.cinemas.forEach(c => new Cinema(c).save())
 
 const bot = new tbot(config.TOKEN, {
     polling: true
